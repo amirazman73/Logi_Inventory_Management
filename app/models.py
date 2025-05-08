@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -7,13 +7,15 @@ class Item(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     brand = Column(String)
+    origin = Column(String, index=True)
+    destination = Column(String, index=True)
     stock_entries = relationship("StockItem", back_populates="item")
 
 class StockItem(Base):
     __tablename__ = "stock_items"
     id = Column(Integer, primary_key=True, index=True)
     item_id = Column(Integer, ForeignKey("items.id"))
-    date_of_collection = Column(Date)
+    date_of_collection = Column(DateTime)
     quantity = Column(Integer)
     status = Column(String, default="active") 
     location = Column(String)
@@ -26,7 +28,7 @@ class Pallet(Base):
     __tablename__ = "pallets"
     id = Column(Integer, primary_key=True, index=True)
     pallet_code = Column(String, unique=True, index=True)
-    created_at = Column(Date)
+    created_at = Column(DateTime)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=True)  # New
 
     order = relationship("Order", back_populates="pallets")
@@ -37,7 +39,7 @@ class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
     order_reference = Column(String)
-    created_at = Column(Date)
+    created_at = Column(DateTime)
 
     pallets = relationship("Pallet", back_populates="order")
 
